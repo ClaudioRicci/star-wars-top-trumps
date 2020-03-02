@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { setupCache } from "axios-cache-adapter";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
 
 export default function App() {
+  const [player1, setPlayer1] = useState({
+    player1Name: "",
+    player1Mass: 0,
+    player1Won: false,
+    player1Score: 0
+  });
+  const [player2, setPlayer2] = useState({
+    player2Name: "",
+    player2Mass: 0,
+    player2Won: false,
+    player2Score: 0
+  });
   const [loading, isLoading] = useState(true);
-  const [player1Name, setPlayer1Name] = useState("");
-  const [player2Name, setPlayer2Name] = useState("");
-  const [player1Mass, setPlayer1Mass] = useState(0);
-  const [player2Mass, setPlayer2Mass] = useState(0);
-  const [player1Won, setPlayer1Won] = useState(false);
-  const [player2Won, setPlayer2Won] = useState(false);
-  let [player1Score, setPlayer1Score]: any = useState(0);
-  let [player2Score, setPlayer2Score]: any = useState(0);
-
-  useEffect(() => {
-    getCharacters();
-  }, []);
 
   function newGame() {
     getCharacters();
@@ -42,32 +41,24 @@ export default function App() {
         const randomPlayer1Mass = parseInt(randomPlayer1[1]);
         const randomPlayer2Mass = parseInt(randomPlayer2[1]);
 
-        setPlayer1Name(randomPlayer1Name);
-        setPlayer2Name(randomPlayer2Name);
-        setPlayer1Mass(randomPlayer1Mass);
-        setPlayer2Mass(randomPlayer2Mass);
+        player1.player1Name = randomPlayer1Name;
+        player2.player2Name = randomPlayer2Name;
+        player1.player1Mass = randomPlayer1Mass;
+        player2.player2Mass = randomPlayer2Mass;
 
         if (randomPlayer1Mass > randomPlayer2Mass) {
-          console.log("Player 1 mass wins");
-          console.log(randomPlayer1Mass + " player 1 mass");
-          console.log(randomPlayer2Mass + " player 2 mass");
-          console.log(typeof randomPlayer1Mass);
-          setPlayer1Won(true);
-          setPlayer2Won(false);
-          setPlayer1Score(player1Score + 1);
+          player1.player1Won = true;
+          player2.player2Won = false;
+          player1.player1Score++;
         }
         if (randomPlayer2Mass > randomPlayer1Mass) {
-          console.log("Player 2 mass wins");
-          console.log(randomPlayer1Mass + " player 1 mass");
-          console.log(randomPlayer2Mass + " player 2 mass");
-          setPlayer1Won(false);
-          setPlayer2Won(true);
-          setPlayer2Score(player2Score + 1);
+          player1.player1Won = false;
+          player2.player2Won = true;
+          player2.player2Score++;
         }
         if (randomPlayer2Mass === randomPlayer1Mass) {
-          console.log("Draw");
-          setPlayer1Won(false);
-          setPlayer2Won(false);
+          player1.player1Won = false;
+          player2.player2Won = false;
         }
       })
       .catch(error => {
@@ -78,47 +69,52 @@ export default function App() {
 
   return (
     <section className="App">
-      <h1>Star Wars Top Trumps</h1>
       <>
+        <h1>Star Wars Top Trumps</h1>
+        <Button variant="success" onClick={() => newGame()}>
+          NEW GAME
+        </Button>
+        <h2>
+          <Badge variant="success" pill>
+            {player1.player1Mass === player2.player2Mass
+              ? "DRAW"
+              : player1.player1Mass > player2.player2Mass
+              ? "PLAYER 1 WON"
+              : "PLAYER 2 WON"}
+          </Badge>
+        </h2>
         <Card
-          title={`Player 1: ${player1Name}`}
+          title={`Player 1: ${player1.player1Name}`}
           bg="primary"
           text="white"
           style={{ width: "18rem" }}
         >
-          <Card.Header>{player1Name}</Card.Header>
+          <Card.Header>CHARACTER BIO: {player1.player1Name}</Card.Header>
           <Card.Body>
-            <Card.Title>{player1Won ? "Player 1 Won" : null}</Card.Title>
-            <Card.Text>Player 1 Mass: {player1Mass}</Card.Text>
-            <h2>
-              <Badge variant="light" pill>
-                PLAYER 1 SCORE: {player1Score}
-              </Badge>
-            </h2>
+            <Card.Text>MASS: {player1.player1Mass}</Card.Text>
           </Card.Body>
         </Card>
         <Card
-          title={`Player 2: ${player2Name}`}
+          title={`Player 2: ${player2.player2Name}`}
           bg="primary"
           text="white"
           style={{ width: "18rem" }}
         >
-          <Card.Header>{player2Name}</Card.Header>
+          <Card.Header>CHARACTER BIO: {player2.player2Name}</Card.Header>
           <Card.Body>
-            <Card.Title>{player2Won ? "Player 2 Won" : null}</Card.Title>
-            <Card.Text>Player 2 Mass: {player2Mass}</Card.Text>
-            <h2>
-              <Badge variant="light" pill>
-                PLAYER 2 SCORE: {player2Score}
-              </Badge>
-            </h2>
+            <Card.Text>MASS: {player2.player2Mass}</Card.Text>
           </Card.Body>
         </Card>
+        <h3>
+          SCORE CARD:
+          <Badge variant="light" pill>
+            PLAYER 1 SCORE: {player1.player1Score}
+          </Badge>
+          <Badge variant="light" pill>
+            PLAYER 2 SCORE: {player2.player2Score}
+          </Badge>
+        </h3>
       </>
-
-      <Button variant="success" onClick={() => newGame()}>
-        New Game
-      </Button>
     </section>
   );
 }
