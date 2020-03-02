@@ -6,16 +6,16 @@ import Card from "react-bootstrap/Card";
 
 export default function App() {
   const [player1, setPlayer1] = useState({
-    player1Name: "",
-    player1Mass: 0,
-    player1Won: false,
-    player1Score: 0
+    name: "",
+    mass: 0,
+    won: false,
+    score: 0
   });
   const [player2, setPlayer2] = useState({
-    player2Name: "",
-    player2Mass: 0,
-    player2Won: false,
-    player2Score: 0
+    name: "",
+    mass: 0,
+    won: false,
+    score: 0
   });
   const [loading, isLoading] = useState(true);
 
@@ -30,35 +30,30 @@ export default function App() {
       .then(json => {
         isLoading(false);
         const players = json.results;
-        const newPlayer1 = players.map(player => [player.name, player.mass]);
-        const newPlayer2 = players.map(player => [player.name, player.mass]);
+        const newPlayer = players.map(player => [player.name, player.mass]);
         const randomPlayer1 =
-          newPlayer1[Math.floor(Math.random() * players.length)];
+          newPlayer[Math.floor(Math.random() * players.length)];
         const randomPlayer2 =
-          newPlayer2[Math.floor(Math.random() * players.length)];
-        const randomPlayer1Name = randomPlayer1[0];
-        const randomPlayer2Name = randomPlayer2[0];
-        const randomPlayer1Mass = parseInt(randomPlayer1[1]);
-        const randomPlayer2Mass = parseInt(randomPlayer2[1]);
+          newPlayer[Math.floor(Math.random() * players.length)];
 
-        player1.player1Name = randomPlayer1Name;
-        player2.player2Name = randomPlayer2Name;
-        player1.player1Mass = randomPlayer1Mass;
-        player2.player2Mass = randomPlayer2Mass;
+        player1.name = randomPlayer1[0];
+        player2.name = randomPlayer2[0];
+        player1.mass = parseInt(randomPlayer1[1]);
+        player2.mass = parseInt(randomPlayer2[1]);
 
-        if (randomPlayer1Mass > randomPlayer2Mass) {
-          player1.player1Won = true;
-          player2.player2Won = false;
-          player1.player1Score++;
+        if (player1.mass > player2.mass) {
+          player1.won = true;
+          player2.won = false;
+          player1.score++;
         }
-        if (randomPlayer2Mass > randomPlayer1Mass) {
-          player1.player1Won = false;
-          player2.player2Won = true;
-          player2.player2Score++;
+        if (player2.mass > player1.mass) {
+          player1.won = false;
+          player2.won = true;
+          player2.score++;
         }
-        if (randomPlayer2Mass === randomPlayer1Mass) {
-          player1.player1Won = false;
-          player2.player2Won = false;
+        if (player1.mass === player2.mass) {
+          player1.won = false;
+          player2.won = false;
         }
       })
       .catch(error => {
@@ -76,44 +71,55 @@ export default function App() {
         </Button>
         <h2>
           <Badge variant="success" pill>
-            {player1.player1Mass === player2.player2Mass
+            {player1.mass === player2.mass
               ? "DRAW"
-              : player1.player1Mass > player2.player2Mass
+              : player1.mass > player2.mass
               ? "PLAYER 1 WON"
               : "PLAYER 2 WON"}
           </Badge>
         </h2>
         <Card
-          title={`Player 1: ${player1.player1Name}`}
+          title={`Player 1: ${player1.name}`}
           bg="primary"
           text="white"
           style={{ width: "18rem" }}
         >
-          <Card.Header>CHARACTER BIO: {player1.player1Name}</Card.Header>
+          <Card.Header>CHARACTER BIO: {player1.name}</Card.Header>
           <Card.Body>
-            <Card.Text>MASS: {player1.player1Mass}</Card.Text>
+            <Card.Text>MASS: {player1.mass}</Card.Text>
           </Card.Body>
         </Card>
         <Card
-          title={`Player 2: ${player2.player2Name}`}
+          title={`Player 2: ${player2.name}`}
           bg="primary"
           text="white"
           style={{ width: "18rem" }}
         >
-          <Card.Header>CHARACTER BIO: {player2.player2Name}</Card.Header>
+          <Card.Header>CHARACTER BIO: {player2.name}</Card.Header>
           <Card.Body>
-            <Card.Text>MASS: {player2.player2Mass}</Card.Text>
+            <Card.Text>MASS: {player2.mass}</Card.Text>
           </Card.Body>
         </Card>
-        <h3>
-          SCORE CARD:
-          <Badge variant="light" pill>
-            PLAYER 1 SCORE: {player1.player1Score}
-          </Badge>
-          <Badge variant="light" pill>
-            PLAYER 2 SCORE: {player2.player2Score}
-          </Badge>
-        </h3>
+
+        <Card
+          title="SCORECARD"
+          bg="secondary"
+          text="white"
+          style={{ width: "18rem" }}
+        >
+          <Card.Body>
+            <Card.Text>
+              <h3>
+                <Badge variant="danger" pill>
+                  PLAYER 1 SCORE: {player1.score}
+                </Badge>
+                <Badge variant="success" pill>
+                  PLAYER 2 SCORE: {player2.score}
+                </Badge>
+              </h3>
+            </Card.Text>
+          </Card.Body>
+        </Card>
       </>
     </section>
   );
