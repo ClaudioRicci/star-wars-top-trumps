@@ -39,8 +39,8 @@ export default function App() {
           newPlayer2[Math.floor(Math.random() * players.length)];
         const randomPlayer1Name = randomPlayer1[0];
         const randomPlayer2Name = randomPlayer2[0];
-        const randomPlayer1Mass = randomPlayer1[1];
-        const randomPlayer2Mass = randomPlayer2[1];
+        const randomPlayer1Mass = parseInt(randomPlayer1[1]);
+        const randomPlayer2Mass = parseInt(randomPlayer2[1]);
 
         setPlayer1Name(randomPlayer1Name);
         setPlayer2Name(randomPlayer2Name);
@@ -49,15 +49,20 @@ export default function App() {
 
         if (randomPlayer1Mass > randomPlayer2Mass) {
           console.log("Player 1 mass wins");
+          console.log(randomPlayer1Mass + " player 1 mass");
+          console.log(randomPlayer2Mass + " player 2 mass");
+          console.log(typeof randomPlayer1Mass);
           setPlayer1Won(true);
           setPlayer2Won(false);
-          setPlayer1Score(player1Score++);
+          setPlayer1Score(player1Score + 1);
         }
         if (randomPlayer2Mass > randomPlayer1Mass) {
           console.log("Player 2 mass wins");
+          console.log(randomPlayer1Mass + " player 1 mass");
+          console.log(randomPlayer2Mass + " player 2 mass");
           setPlayer1Won(false);
           setPlayer2Won(true);
-          setPlayer2Score(player2Score++);
+          setPlayer2Score(player2Score + 1);
         }
         if (randomPlayer2Mass === randomPlayer1Mass) {
           console.log("Draw");
