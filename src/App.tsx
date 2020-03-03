@@ -6,6 +6,7 @@ import Card from "react-bootstrap/Card";
 import { IInitialPlayerState } from "./interfaces";
 
 export default function App() {
+  //Initialise State
   const [player1] = useState<IInitialPlayerState>({
     name: "???",
     mass: 0,
@@ -20,6 +21,7 @@ export default function App() {
   });
   const [loading, isLoading] = useState<boolean>(true);
 
+  //Load Characters
   useEffect(() => {
     getCharacters();
   }, []);
@@ -30,42 +32,46 @@ export default function App() {
 
   function getCharacters(): Promise<void> {
     isLoading(true);
-    return fetch("https://swapi.co/api/people/?format=json")
-      .then(response => response.json())
-      .then(json => {
-        isLoading(false);
-        const players = json.results;
-        const newPlayer = players.map(player => [player.name, player.mass]);
-        const randomPlayer1 =
-          newPlayer[Math.floor(Math.random() * players.length)];
-        const randomPlayer2 =
-          newPlayer[Math.floor(Math.random() * players.length)];
+    return (
+      fetch("https://swapi.co/api/people/?format=json")
+        .then(response => response.json())
+        .then(json => {
+          isLoading(false);
+          const players = json.results;
+          const newPlayer = players.map(player => [player.name, player.mass]);
+          const randomPlayer1 =
+            newPlayer[Math.floor(Math.random() * players.length)];
+          const randomPlayer2 =
+            newPlayer[Math.floor(Math.random() * players.length)];
 
-        player1.name = randomPlayer1[0];
-        player2.name = randomPlayer2[0];
-        player1.mass = parseInt(randomPlayer1[1]);
-        player2.mass = parseInt(randomPlayer2[1]);
+          player1.name = randomPlayer1[0];
+          player2.name = randomPlayer2[0];
+          player1.mass = parseInt(randomPlayer1[1]);
+          player2.mass = parseInt(randomPlayer2[1]);
 
-        if (player1.mass > player2.mass) {
-          player1.won = true;
-          player2.won = false;
-          player1.score++;
-        }
-        if (player2.mass > player1.mass) {
-          player1.won = false;
-          player2.won = true;
-          player2.score++;
-        }
-        if (player1.mass === player2.mass) {
-          player1.won = false;
-          player2.won = false;
-        }
-      })
-      .catch(error => {
-        // Error handling
-        isLoading(false);
-        console.log(error);
-      });
+          //Main game logic: set winning player based on 'mass' value, and increment their score by 1
+          if (player1.mass > player2.mass) {
+            player1.won = true;
+            player2.won = false;
+            player1.score++;
+          }
+          if (player2.mass > player1.mass) {
+            player1.won = false;
+            player2.won = true;
+            player2.score++;
+          }
+          //Handle draw
+          if (player1.mass === player2.mass) {
+            player1.won = false;
+            player2.won = false;
+          }
+        })
+        // Error Handling
+        .catch(error => {
+          isLoading(false);
+          console.log(error);
+        })
+    );
   }
 
   if (loading) {
