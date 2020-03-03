@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Matches snapshot 1`] = `
+<button
+  className="btn btn-primary"
+  data-testid="button"
+  disabled={true}
+  type="button"
+>
+  <span
+    aria-hidden="true"
+    className="spinner-grow spinner-grow-sm"
+    role="status"
+  />
+  LOADING...
+</button>
+`;

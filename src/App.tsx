@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { setupCache } from "axios-cache-adapter";
+import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
 
 export default function App() {
   const [player1, setPlayer1] = useState({
-    name: "",
+    name: "???",
     mass: 0,
     won: false,
     score: 0
   });
   const [player2, setPlayer2] = useState({
-    name: "",
+    name: "???",
     mass: 0,
     won: false,
     score: 0
   });
   const [loading, isLoading] = useState(true);
+
+  useEffect(() => {
+    getCharacters();
+  }, []);
 
   function newGame() {
     getCharacters();
@@ -59,68 +63,78 @@ export default function App() {
       .catch(error => {
         // Error handling
         isLoading(false);
+        console.log(error);
       });
   }
 
+  if (loading) {
+    return (
+      <Button variant="primary" disabled data-testid="button">
+        <Spinner
+          as="span"
+          animation="grow"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+        />
+        LOADING...
+      </Button>
+    );
+  }
   return (
     <section className="App">
-      <>
-        <h1>Star Wars Top Trumps</h1>
-        <Button variant="success" onClick={() => newGame()}>
-          NEW GAME
-        </Button>
-        <h2>
-          <Badge variant="success" pill>
-            {player1.mass === player2.mass
-              ? "DRAW"
-              : player1.mass > player2.mass
-              ? "PLAYER 1 WON"
-              : "PLAYER 2 WON"}
-          </Badge>
-        </h2>
-        <Card
-          title={`Player 1: ${player1.name}`}
-          bg="primary"
-          text="white"
-          style={{ width: "18rem" }}
-        >
-          <Card.Header>CHARACTER BIO: {player1.name}</Card.Header>
-          <Card.Body>
-            <Card.Text>MASS: {player1.mass}</Card.Text>
-          </Card.Body>
-        </Card>
-        <Card
-          title={`Player 2: ${player2.name}`}
-          bg="primary"
-          text="white"
-          style={{ width: "18rem" }}
-        >
-          <Card.Header>CHARACTER BIO: {player2.name}</Card.Header>
-          <Card.Body>
-            <Card.Text>MASS: {player2.mass}</Card.Text>
-          </Card.Body>
-        </Card>
-
-        <Card
-          title="SCORECARD"
-          bg="secondary"
-          text="white"
-          style={{ width: "18rem" }}
-        >
-          <Card.Body>
-            <Card.Text>
-              <h3>
-                <Badge variant="danger" pill>
-                  PLAYER 1 SCORE: {player1.score}
-                </Badge>
-                <Badge variant="success" pill>
-                  PLAYER 2 SCORE: {player2.score}
-                </Badge>
-              </h3>
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      </>
+      <h1>Star Wars Top Trumps</h1>
+      <Button variant="success" onClick={() => newGame()}>
+        NEW GAME
+      </Button>
+      <h2>
+        <Badge variant="success" pill>
+          {player1.mass === player2.mass
+            ? "DRAW"
+            : player1.mass > player2.mass
+            ? "PLAYER 1 WON"
+            : "PLAYER 2 WON"}
+        </Badge>
+      </h2>
+      <Card
+        title={`Player 1: ${player1.name}`}
+        bg="primary"
+        text="white"
+        style={{ width: "18rem" }}
+      >
+        <Card.Header>BIO: {player1.name}</Card.Header>
+        <Card.Body>
+          <Card.Text>MASS: {player1.mass}</Card.Text>
+        </Card.Body>
+      </Card>
+      <Card
+        title={`Player 2: ${player2.name}`}
+        bg="primary"
+        text="white"
+        style={{ width: "18rem" }}
+      >
+        <Card.Header>BIO: {player2.name}</Card.Header>
+        <Card.Body>
+          <Card.Text>MASS: {player2.mass}</Card.Text>
+        </Card.Body>
+      </Card>
+      <Card
+        title="SCORECARD"
+        bg="secondary"
+        text="white"
+        style={{ width: "18rem" }}
+      >
+        <Card.Body>
+          <h3>
+            <Badge variant="danger" pill>
+              PLAYER 1 SCORE: {player1.score}
+            </Badge>
+            <Badge variant="success" pill>
+              PLAYER 2 SCORE: {player2.score}
+            </Badge>
+          </h3>
+        </Card.Body>
+      </Card>
     </section>
   );
 }
