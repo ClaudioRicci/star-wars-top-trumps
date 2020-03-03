@@ -17,3 +17,15 @@ it("Matches snapshot", () => {
   const tree = renderer.create(<App></App>).toJSON();
   expect(tree).toMatchSnapshot();
 });
+
+test("Renders Loading Correctly", done => {
+  const { getByTestId } = render(<App />);
+  expect(getByTestId("loading")).toHaveTextContent("LOADING...");
+  done();
+});
+
+test("Renders Loading Correctly", done => {
+  const { getByTestId } = render(<App />);
+  expect(getByTestId("title")).toHaveTextContent("Star Wars Top Trumps");
+  done();
+});

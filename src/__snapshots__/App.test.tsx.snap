@@ -3,7 +3,7 @@
 exports[`Matches snapshot 1`] = `
 <button
   className="btn btn-primary"
-  data-testid="button"
+  data-testid="loading"
   disabled={true}
   type="button"
 >

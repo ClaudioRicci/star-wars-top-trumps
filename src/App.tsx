@@ -3,31 +3,32 @@ import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
+import { IInitialPlayerState } from "./interfaces";
 
 export default function App() {
-  const [player1, setPlayer1] = useState({
+  const [player1] = useState<IInitialPlayerState>({
     name: "???",
     mass: 0,
     won: false,
     score: 0
   });
-  const [player2, setPlayer2] = useState({
+  const [player2] = useState<IInitialPlayerState>({
     name: "???",
     mass: 0,
     won: false,
     score: 0
   });
-  const [loading, isLoading] = useState(true);
+  const [loading, isLoading] = useState<boolean>(true);
 
   useEffect(() => {
     getCharacters();
   }, []);
 
-  function newGame() {
+  function newGame(): void {
     getCharacters();
   }
 
-  function getCharacters() {
+  function getCharacters(): Promise<void> {
     isLoading(true);
     return fetch("https://swapi.co/api/people/?format=json")
       .then(response => response.json())
@@ -69,7 +70,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <Button variant="primary" disabled data-testid="button">
+      <Button variant="primary" disabled data-testid="loading">
         <Spinner
           as="span"
           animation="grow"
@@ -84,7 +85,7 @@ export default function App() {
   return (
     <section className="App">
       <h1>Star Wars Top Trumps</h1>
-      <Button variant="success" onClick={() => newGame()}>
+      <Button variant="success" type="submit" onClick={() => newGame()}>
         NEW GAME
       </Button>
       <h2>
